@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h1>URL Shrinker</h1>
+    <form action="/shortUrls" method="POST" class="my-4 form-inline">
+      <label for="fullUrl" class="sr-only">Url</label>
+      <input required placeholder="Enter valid URL" type="url" name="fullUrl" id="fullUrl"
+        class="form-control mr-2 col">
+      <button class="btn btn-success" type="submit">Shrink</button>
+    </form>
+
+    <table class="table table-striped responsive">
+      <thead>
+        <tr>
+          <th>Full URL</th>
+          <th>Short URL</th>
+          <th>Clicks</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% allUrls.forEach(url => { %>
+        <tr>
+          <td>
+            <a target="_blank" href="<%= url.full %>"><%= url.full %></a>
+          </td>
+          <td>
+            <a target="_blank" href="<%= url.short %>"><%= url.short %></a>
+          </td>
+          <td>
+            <%= url.clicks %>
+          </td>
+          <td><span class="remove btn btn-danger btn-sm rounded">-</span></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    var btns = document.getElementsByClassName('remove')
+    Array.prototype.forEach.call(btns, function (btn) {
+      btn.addEventListener('click', function () {
+        var rowItem = this.parentNode.parentNode
+        var shortUrl = this.parentNode.parentNode.querySelectorAll('a')[1].textContent;
+
+
+        fetch('/delete/' + shortUrl, { method: 'DELETE' })
+        rowItem.remove()
+      })
+    });
+  </script>
+</body>
+
+</html>
